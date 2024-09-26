@@ -145,7 +145,7 @@
 
         <?php
         if (isset($_POST['btnlogin'])) {
-            $hostname = "localhost";
+            $hostname = "localhost:3308";
             $username = "root";
             $password = "";
             $database = "pms";
@@ -182,11 +182,11 @@
                     if (password_verify($pass, $stupass)) {
                         $_SESSION['txtemail'] = $id;
                         echo '<script>alert("Login Successfully student");</script>';
-                        echo '<script>window.location.replace("http://localhost/PMS/StudentDashboard.php");</script>';
+                        echo '<script>window.location.replace("http://localhost/pms2/StudentDashboard.php");</script>';
                     } else if (password_verify($pass, $facpass)) {
                         $_SESSION['txtemail'] = $id;
                         echo '<script>alert("Login Successfully faculty");</script>';
-                        echo '<script>window.location.replace("http://localhost/PMS/index.php");</script>';
+                        echo '<script>window.location.replace("http://localhost/pms2/index.php");</script>';
                     } else {
                         echo '<script>alert("Wrong Password");</script>';
                     }

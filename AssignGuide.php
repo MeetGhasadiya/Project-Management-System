@@ -222,7 +222,7 @@
         <div class="sidebar">
             <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p>Add Student</p></a>
             <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p>Add Faculty</p></a>
-            <a href="AssignGrade.php"><i class="fas fa-shield-alt"></i><p class="addsf">Assign Guard</p></a>
+            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p class="addsf">Assign Guide</p></a>
             <a href="AssignGroup.php"><i class="fas fa-users"></i><p>Assign Group </p></a>
             <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
             <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
@@ -252,8 +252,8 @@
 
 
             <div class="section" id="assign-guard">
-                <h2>Assign Grade</h2>
-                <button>Assign Grade</button>
+                <h2>Assign Guide</h2>
+                <button>Assign Guide</button>
             </div>
 
 
