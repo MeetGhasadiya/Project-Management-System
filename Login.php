@@ -132,7 +132,7 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <a href="#" id="forgotPassword">Forgot Password?</a>
+                        <a href="ForgetPassword.php" id="forgotPassword">Forgot Password?</a>
                     </td>
                 </tr>
                 <tr>

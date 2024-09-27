@@ -378,10 +378,10 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
             <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p class="addsf">Add Faculty</p></a>
             <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guard</p></a>
             <a href="AssignGroup.php"><i class="fas fa-users"></i><p>Assign Group </p></a>
+            <a href="Announcement.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
             <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
             <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
             <a href="ManageLoogbook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
-            <a href="Announcement.php"><i class="fas fa-bullhorn"></i><p>Announcement</p></a>
         </div>
 
         <!-- Main Content -->

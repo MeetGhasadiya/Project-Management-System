@@ -16,6 +16,11 @@
                 box-sizing: border-box;
             }
 
+            .sidebar p{
+                margin: 0px;
+                padding: 0px;
+            }
+            
             body {
                 font-family: Arial, sans-serif;
                 background-color: #f4f4f4;
@@ -100,11 +105,6 @@
                 margin-bottom: 20px;
                 border-radius: 5px;
 
-            }
-            
-            .sidebar p{
-                margin: 0px;
-                padding: 0px;
             }
 
             .section.active {
@@ -222,8 +222,8 @@
         <div class="sidebar">
             <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p>Add Student</p></a>
             <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p>Add Faculty</p></a>
-            <a href="AssignGrade.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
-            <a href="Announcement.php"><i class="fas fa-tasks"></i><p class="addsf">Manage Project</p></a>
+            <a href="AssignGrade.php"><i class="fas fa-shield-alt"></i><p class="addsf">Assign Guide</p></a>
+            <a href="Announcement.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
             <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
             <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
             <a href="ManageLoogbook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
@@ -234,7 +234,7 @@
             <div class="navbar">
                 <h1 style="margin:0px;padding: 0px;">Admin Dashboard</h1>
                 <div style="width: 70%"></div>
-                <div>
+                <div class="nav-links">
                     <div class="dropdown">
                         <button class="profile-btn" class="dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-user-circle"></i> Profile <span class="caret"></span>
@@ -250,9 +250,9 @@
             <!-- Sections for different sidebar links -->
 
 
-            <div class="section" id="announcement">
-                <h2>Announcement</h2>
-                <button>Make Announcement</button>
+            <div class="section" id="assign-guard">
+                <h2>Assign Grade</h2>
+                <button>Assign Grade</button>
             </div>
 
 
