@@ -345,7 +345,7 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                     transform: translateY(0);
                 }
             }
-            
+
             .sidebar p{
                 margin: 0px;
                 padding: 0px;
@@ -365,10 +365,10 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
             <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p class="addsf">Add Student</p></a>
             <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p>Add Faculty</p></a>
             <a href="AssignGrade.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
-            <a href="Announcement.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
+            <a href="ManageProject.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
             <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
             <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
-            <a href="ManageLoogbook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
+            <a href="ManageLogBook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
         </div>
 
         <!-- Main Content -->
@@ -526,6 +526,19 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
             $qui = "select *from student";
             $qi = mysqli_query($c, $qui);
 
+            if (isset($_POST['delete'])) {
+                $id = $_POST['id'];
+                $delete = "DELETE FROM student WHERE sid=$id";
+                $query = @mysqli_query($c, $delete);
+
+                if ($query) {
+                    echo "<script>window.location.replace('AddStudent.php');</script>";
+                    echo "<script>alert('Deleted succesfully');</script>";
+                    exit();
+                } else {
+                    echo "<script>alert('Error: " . $sql . "<br>" . $conn->error . "');</script>";
+                }
+            }
             ?>          
 
 
@@ -546,7 +559,7 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                                 <th>Name</th>
                                 <th>Semester</th>
                                 <th>Email</th>
-                                <th>Contect Number</th>
+                                <th>Contact Number</th>
                                 <th>Action</th>
                             </tr>
                             <?php while ($row = mysqli_fetch_assoc($qi)) { ?>
@@ -575,18 +588,5 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                 </div>
             </div>
         </div>
-
-
-
-
-
-        <div class="section" class="bulk">
-
-        </div>
-
-
-
-
-
     </body>
 </html>

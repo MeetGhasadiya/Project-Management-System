@@ -376,12 +376,11 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
         <div class="sidebar">
             <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p>Add Student</p></a>
             <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p class="addsf">Add Faculty</p></a>
-            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guard</p></a>
-            <a href="AssignGroup.php"><i class="fas fa-users"></i><p>Assign Group </p></a>
-            <a href="Announcement.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
+            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
+            <a href="ManageProject.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
             <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
             <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
-            <a href="ManageLoogbook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
+            <a href="ManageLogBook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
         </div>
 
         <!-- Main Content -->
@@ -463,50 +462,24 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                         </table>
                     </form>
                 </div>
-                
-                    <?php
-                    if (isset($_POST['btnbulk'])) {
-                        $file = $_FILES['uploade']['tmp_name'];
-                        $handle = fopen($file, "r");
-                        echo "<script>alert('fcgbhjmlk,;');</script>";
-                        $lines = file($file, FILE_IGNORE_NEW_LINES);
 
-                        foreach ($lines as $line) {
+                <?php
+                if (isset($_POST['btnbulk'])) {
+                    $file = $_FILES['uploade']['tmp_name'];
+                    $handle = fopen($file, "r");
+                    echo "<script>alert('fcgbhjmlk,;');</script>";
+                    $lines = file($file, FILE_IGNORE_NEW_LINES);
 
-                            $data = explode(",", $line);
+                    foreach ($lines as $line) {
 
-                            $fid = $data[0];
-                            $fname = $data[1];
-                            $con = $data[2];
-                            $deg = $data[3];
-                            $email = $data[4];
-                            $p = $data[5];
-                            $pass = password_hash($p, PASSWORD_DEFAULT);
+                        $data = explode(",", $line);
 
-                            $qu = "SELECT * FROM faculty WHERE fid = $fid or email = '$email' or contactnumber = $con";
-                            $q = mysqli_query($c, $qu);
-
-                            if (mysqli_num_rows($q) > 0) {
-                                echo "<script>alert('Please check id, contact number or Email..!');</script>";
-                            } else {
-                                $qu = "insert into faculty values($fid,'$fname',$con,'$deg','$email','$pass')";
-                                $q = @mysqli_query($c, $qu);
-                                if ($q) {
-                                    echo "<script>alert('Record Successfully inserted...!');</script>";
-                                } else {
-                                    echo "<script>alert('Error while Inserting...!');</script>";
-                                }
-                            }
-                        }
-                    }
-
-                    if (isset($_POST['btnsubmit'])) {
-                        $fid = $_POST['fid'];
-                        $fname = $_POST['fname'];
-                        $con = $_POST['cno'];
-                        $deg = $_POST['desig'];
-                        $email = $_POST['email'];
-                        $p = $_POST['password'];
+                        $fid = $data[0];
+                        $fname = $data[1];
+                        $con = $data[2];
+                        $deg = $data[3];
+                        $email = $data[4];
+                        $p = $data[5];
                         $pass = password_hash($p, PASSWORD_DEFAULT);
 
                         $qu = "SELECT * FROM faculty WHERE fid = $fid or email = '$email' or contactnumber = $con";
@@ -524,26 +497,50 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                             }
                         }
                     }
+                }
 
-                    $qui = "select *from faculty";
-                    $qi = mysqli_query($c, $qui);
-                    
+                if (isset($_POST['btnsubmit'])) {
+                    $fid = $_POST['fid'];
+                    $fname = $_POST['fname'];
+                    $con = $_POST['cno'];
+                    $deg = $_POST['desig'];
+                    $email = $_POST['email'];
+                    $p = $_POST['password'];
+                    $pass = password_hash($p, PASSWORD_DEFAULT);
 
-                    if (isset($_POST['delete'])) {
-                        $id = $_POST['fid'];
-                        $delete = "DELETE FROM faculty WHERE fid=$id";
-                        $query = @mysqli_query($c, $delete);
+                    $qu = "SELECT * FROM faculty WHERE fid = $fid or email = '$email' or contactnumber = $con";
+                    $q = mysqli_query($c, $qu);
 
-                        if ($query) {
-                            echo "<script>window.location.replace('AddFaculty.php');</script>";
-                            echo "<script>alert('Deleted succesfully');</script>";
-                            exit();
+                    if (mysqli_num_rows($q) > 0) {
+                        echo "<script>alert('Please check id, contact number or Email..!');</script>";
+                    } else {
+                        $qu = "insert into faculty values($fid,'$fname',$con,'$deg','$email','$pass')";
+                        $q = @mysqli_query($c, $qu);
+                        if ($q) {
+                            echo "<script>alert('Record Successfully inserted...!');</script>";
                         } else {
-                            echo "<script>alert('Error: " . $sql . "<br>" . $conn->error . "');</script>";
+                            echo "<script>alert('Error while Inserting...!');</script>";
                         }
                     }
-                    ?>
-                
+                }
+
+                $qui = "select *from faculty";
+                $qi = mysqli_query($c, $qui);
+
+                if(isset($_POST['delete'])) {
+                    $id = $_POST['fid'];
+                    $delete = "DELETE FROM faculty WHERE fid=$id";
+                    $query = @mysqli_query($c, $delete);
+
+                    if ($query) {
+                        echo "<script>window.location.replace('AddFaculty.php');</script>";
+                        echo "<script>alert('Deleted succesfully');</script>";
+                        exit();
+                    } else {
+                        echo "<script>alert('Error: " . $sql . "<br>" . $conn->error . "');</script>";
+                    }
+                }
+                ?>
             </div>
 
             <div class="section" class="bulk">
@@ -573,12 +570,12 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                                     <td><?php echo $r['designation']; ?></td>
                                     <td><?php echo $r['email']; ?></td>
                                     <td>
-                                        <form method="POST" style="display:inline-block;">
-                                            <input type="hidden" name="id" value="<?php echo $row['sid']; ?>">
+                                        <form method="POST" action="AddFaculty.php" style="display:inline-block;">
+                                            <input type="hidden" name="fid" value="<?php echo $r['fid']; ?>">
                                             <input type="submit" name="delete" value="Delete">
                                         </form>
                                         <form method="GET" action="update.php" style="display:inline-block;">
-                                            <input type="hidden" name="id" value="<?php echo $row['sid']; ?>">
+                                            <input type="hidden" name="fid" value="<?php echo $r['fid']; ?>">
                                             <input type="submit" value="Edit" style="width: 86px">
                                         </form>
                                     </td>
