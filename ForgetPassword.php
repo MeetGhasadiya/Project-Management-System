@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+$host = 'localhost';
+$user = 'root';
+$pass = '';
+$db = 'pms';
+$con = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
+session_start();
+?>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -6,6 +13,7 @@
         <title>Forgot Password</title>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
         <style>
+            /* Your existing CSS */
             * {
                 box-sizing: border-box;
                 margin: 0;
@@ -79,7 +87,6 @@
                 font-size: 1rem;
                 font-weight: 600;
                 cursor: pointer;
-
                 transition: background-color 0.3s ease, transform 0.2s ease;
             }
 
@@ -108,7 +115,6 @@
                 }
             }
 
-            /* Additional Styling */
             .note {
                 text-align: center;
                 color: #888;
@@ -116,6 +122,49 @@
                 margin-top: 10px;
             }
         </style>
+
+
+        <script>
+
+            function validateMobileNo(input) {
+                // Allow only digits (remove non-digit characters)
+                input.value = input.value.replace(/\D/g, '');
+            }
+            window.onload = function () {
+
+                document.getElementById('otp').addEventListener('input', function (event) {
+                    validateMobileNo(event.target);
+                });
+            };
+        </script>
+
+
+<!--        <script>
+    // JavaScript for handling OTP and password reset interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        const sendOtpBtn = document.getElementById('sendOtpBtn');
+        const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+        const otpInput = document.getElementById('otp');
+        const newPasswordInput = document.getElementById('newPassword');
+        const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+
+        // Initially disable OTP and password fields
+        otpInput.disabled = true;
+        verifyOtpBtn.disabled = true;
+        newPasswordInput.disabled = true;
+        resetPasswordBtn.disabled = true;
+
+        // Send OTP button logic
+        sendOtpBtn.addEventListener('click', function () {
+            
+            otpInput.disabled = false;
+            verifyOtpBtn.disabled = false;
+        });
+
+        
+    });
+</script>-->
+
     </head>
     <body>
 
@@ -123,40 +172,36 @@
             <h1>Forgot Password</h1>
             <p>Please enter your ID and request an OTP to reset your password</p>
             <table style="width: 100%; border-spacing: 15px;">
-                <!-- ID Input -->
                 <tr>
-                    <td><label for="userId" class="form-label">ID</label></td>
-                    <td><input type="text" id="userId" name="userId" class="form-input" placeholder="Enter your ID" required></td>
+                    <td><label class="form-label">EMAIL ID</label></td>
+                    <td><input type="email" id="userId" name="userId" class="form-input" placeholder="Enter your ID"
+                               <?php if (isset($_POST['userId'])) echo 'value="' . htmlspecialchars($_POST['userId']) . '"'; ?> required></td>
                 </tr>
 
-                <!-- Send OTP Button -->
                 <tr>
                     <td></td>
-                    <td><button type="button" class="otp-button" name="btnsend" id="sendOtpBtn">Send OTP</button></td>
+                    <td><button type="submit" name="btnsend" class="otp-button" id="sendOtpBtn">Send OTP</button></td>
                 </tr>
 
-                <!-- OTP Input -->
                 <tr>
                     <td><label for="otp" class="form-label">OTP</label></td>
-                    <td><input type="text" id="otp" name="verify" class="form-input" placeholder="Enter OTP" required disabled></td>
+                    <td><input type="text" id="otp" name="verify" class="form-input" placeholder="Enter OTP" maxlength="6"
+                               <?php if (isset($_POST['verify'])) echo 'value="' . htmlspecialchars($_POST['verify']) . '"'; ?>></td>
                 </tr>
 
-                <!-- Verify OTP Button -->
                 <tr>
                     <td></td>
-                    <td><button type="button" class="otp-button" name="btnver" id="verifyOtpBtn" disabled>Verify OTP</button></td>
+                    <td><button type="submit" name="btnver" class="otp-button" id="verifyOtpBtn">Verify OTP</button></td>
                 </tr>
 
-                <!-- New Password Input -->
                 <tr>
                     <td><label for="newPassword" class="form-label">New Password</label></td>
-                    <td><input type="password" id="newPassword" name="newPassword" class="form-input" placeholder="Enter new password" required disabled></td>
+                    <td><input type="password" id="newPassword" name="newPassword" class="form-input" placeholder="Enter new password" ></td>
                 </tr>
 
-                <!-- Reset Password Button -->
                 <tr>
                     <td colspan="2">
-                        <button type="submit" name="btnchange" class="form-button" id="resetPasswordBtn" disabled>Reset Password</button>
+                        <button type="submit" name="btnchange" class="form-button" id="resetPasswordBtn" >Reset Password</button>
                     </td>
                 </tr>
             </table>
@@ -165,238 +210,161 @@
         </form>
 
 
-        <script>
-            const sendOtpBtn = document.getElementById('sendOtpBtn');
-            const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-            const otpInput = document.getElementById('otp');
-            const newPasswordInput = document.getElementById('newPassword');
-            const resetPasswordBtn = document.getElementById('resetPasswordBtn');
-
-            // Send OTP button logic
-            sendOtpBtn.addEventListener('click', function () {
-                alert('OTP sent to your registered email/phone!');
-                otpInput.disabled = false;
-                verifyOtpBtn.disabled = false;
-            });
-
-            // Verify OTP button logic
-            verifyOtpBtn.addEventListener('click', function () {
-                if (otpInput.value === '123456') { // Simulate OTP verification
-                    alert('OTP verified successfully!');
-                    newPasswordInput.disabled = false;
-                    resetPasswordBtn.disabled = false;
-                } else {
-                    alert('Invalid OTP. Please try again.');
-                }
-            });
-        </script>
 
         <?php
 
         use PHPMailer\PHPMailer\PHPMailer;
         use PHPMailer\PHPMailer\Exception;
 
-        require 'C:\xampp\htdocs\PMS\PHPMailer-master\src\PHPMailer.php';
-        require 'C:\xampp\htdocs\PMS\PHPMailer-master\src\Exception.php';
-        require 'C:\xampp\htdocs\PMS\PHPMailer-master\src\SMTP.php';
+        require 'C:\xampp\htdocs\pms2\PHPMailer-master\src\PHPMailer.php';
+        require 'C:\xampp\htdocs\pms2\PHPMailer-master\src\Exception.php';
+        require 'C:\xampp\htdocs\pms2\PHPMailer-master\src\SMTP.php';
 
-        if (isset($_POST['btnsend'])) {
-            echo "<script>alert('otp')</script>";
-            sendotp();
-        } else if (isset($_POST['btnver'])) {
-            verifyOTP();
-        } else if (isset($_POST['btnchange'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['btnsend'])) {
+                sendOtp();
+            } elseif (isset($_POST['btnver'])) {
 
-            store_data();
+                verifyOtp();
+            } elseif (isset($_POST['btnchange'])) {
+                store_data();
+            }
         }
-
 
         if (isset($_POST['btnver'])) {
             $_SESSION['vstatus'] = 1;
+        } else {
+            $_SESSION['vstatus'] = 0;
         }
 
-        function sendotp() {
-            if (isset($_POST['userId'])) {
-
-                sendEmail($_POST['userId']);
-                $_SESSION['vemail'] = $_POST['userId'];
+        function sendOtp() {
+            $userId = $_POST['userId'];
+            if ($userId) {
+                sendEmail($userId);
+                $_SESSION['vemail'] = $userId;
             }
         }
 
         function sendEmail($recipient_email) {
             try {
-
-
-                $recipient_email = $_POST['userId'];
-
                 $otp = mt_rand(100000, 999999);
                 $otp_generation_time = time();
 
-                echo "<script>alert('1')</script>";
                 $mail = new PHPMailer(true);
-
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
-                $mail->Username = '22bmiit055@gmail.com'; //enter email address
-                $mail->Password = 'iaorlmeokkkimlkw'; // Enter email password
+                $mail->Username = '22bmiit055@gmail.com';
+                $mail->Password = 'ismzgubeuwluayxb';
                 $mail->SMTPSecure = 'tls';
                 $mail->Port = 587;
 
-                echo "<script>alert('2')</script>";
-                // Sender and recipient
                 $mail->setFrom('22bmiit055@gmail.com', 'Milestone Master');
                 $mail->addAddress($recipient_email);
-
-                echo "<script>alert('3')</script>";
                 $mail->isHTML(true);
                 $mail->Subject = 'OTP for registration';
                 $mail->Body = getEmailTemplate($otp);
 
-                echo "<script>alert('4')</script>";
                 $mail->send();
-                
-                echo "<script>alert('5')</script>";
-                $_SESSION['otp'] = $otp;
-                $_SESSION['email'] = $recipient_email;
 
+                $_SESSION['otp'] = $otp;
                 $_SESSION['otp_generation_time'] = $otp_generation_time;
-                echo "<script>alert('OTP has been sent to your email.')</script>";
+
+                echo "<script>alert('OTP has been sent to your email.');</script>";
             } catch (Exception $e) {
-                echo 'Message could not be sent.';
-                echo 'Mailer Error: ' . $mail->ErrorInfo;
+                echo 'Message could not be sent. Mailer Error: ' . $mail->ErrorInfo;
             }
         }
 
-        function verifyOTP() {
-            if (isset($_POST['verify'])) {
+        function verifyOtp() {
 
-                $enteredOTP = $_POST['verify'];
-                $storedOTP = $_SESSION['otp'];
-                $email = $_SESSION['email'];
 
-                if ($enteredOTP == null) {
-                    echo '<script>alert("Enter OTP First");</script>';
-                }
-                if ($enteredOTP == $storedOTP) {
-                    echo '<script>alert("OTP verification successful for email: ' . $email . '");</script>';
-                    $_SESSION['verifiystatus'] = 1;
-                } else {
-                    echo '<script>alert("OTP verification failed.Please again send OTP.");</script>';
-                    $_SESSION['verifiystatus'] = 0;
-                }
+            $enteredOTP = $_POST['verify'];
+            $storedOTP = $_SESSION['otp'];
+            $email = $_SESSION['vemail'];
+
+            if ($enteredOTP == null) {
+                echo '<script>alert("Enter OTP First");</script>';
+            }
+            if ($enteredOTP == $storedOTP) {
+                echo '<script>alert("OTP verification successful for email: ' . $email . '");</script>';
+                $_SESSION['verifiystatus'] = 1;
+            } else {
+                echo '<script>alert("OTP verification failed.Please again send OTP.");</script>';
+                $_SESSION['verifiystatus'] = 0;
             }
         }
 
         function getEmailTemplate($otp) {
             return '
-                <html>
-                <head>
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            background-color: #f4f4f4;
-                            margin: 0;
-                            padding: 0;
-                        }
-                        .container {
-                            width: 100%;
-                            max-width: 600px;
-                            margin: 0 auto;
-                            background-color: #ffffff;
-                            padding: 20px;
-                            border: 1px solid #ddd;
-                            border-radius: 4px;
-                        }
-                        .header {
-                            background-color: #004f9f;
-                            color: #ffffff;
-                            padding: 10px;
-                            text-align: center;
-                        }
-                        .content {
-                            margin-top: 20px;
-                            text-align: center;
-                        }
-                        .footer {
-                            background-color: #f4f4f4;
-                            color: #666666;
-                            padding: 10px;
-                            text-align: center;
-                            font-size: 12px;
-                            border-top: 1px solid #ddd;
-                        }
-                        .otp-code {
-                            font-size: 24px;
-                            font-weight: bold;
-                            margin: 20px 0;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h1>PMS</h1>
-                        </div>
-                        <div class="content">
-                            <p>Dear User,</p>
-                            <p>Your One-Time Password (OTP) for email verification is:</p>
-                            <h2>New OTP</h2>
-                            <div class="otp-code">' . $otp . '</div>
-                            <p>Please use this OTP to verify your email address.</p>
-                            <p>If you did not request this OTP, please ignore this email.</p>
-                        </div>
-                        <div class="footer">
-                            <p>© 2024 E-Auction System. All rights reserved.</p>
-                            <p><a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a></p>
-                        </div>
-                    </div>
-                </body>
-                </html>';
+    <html>
+    <head>
+        <style>
+            body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; }
+            .header { background-color: #004f9f; color: #fff; text-align: center; padding: 10px; }
+            .otp-code { font-size: 24px; font-weight: bold; margin: 20px 0; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>PMS</h1>
+            </div>
+            <div class="content">
+                <p>Dear User,</p>
+                <p>Your One-Time Password (OTP) is:</p>
+                <div class="otp-code">' . $otp . '</div>
+                <p>Please use this OTP to verify your email.</p>
+            </div>
+            <div class="footer">
+                <p>© 2024 PMS. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>';
         }
 
         function store_data() {
             ob_start();
 
-            $hostname = "localhost";
-            $username = "root";
-            $password = "";
-            $database = "pms";
+            // Declare $con as global so it's accessible inside the function
+            global $con;
 
-// Connect to the database
-            $c = mysqli_connect($hostname, $username, $password, $database);
-
-            if (!$c) {
+            if (!$con) {
                 die("Connection failed: " . mysqli_connect_error());
             } else {
+                $a = $_SESSION['vstatus'];
+                $b = $_SESSION['verifiystatus'];
+               
 
                 if ($_SESSION['vstatus'] == 1 and $_SESSION['verifiystatus'] == 1) {
                     // Retrieve and sanitize user inputs
                     $email = $_POST['userId'];
-                    $pass = password_hash($_POST['newpassword'], PASSWORD_DEFAULT);
+                    $pass = password_hash($_POST['newPassword'], PASSWORD_DEFAULT);
 
                     // Create the update query
-                    $qus = "UPDATE tblstudent SET password='$pass' WHERE email='$email'";
-                    $quf = "UPDATE tblfaculty SET password='$pass' WHERE email='$email'";
+                    $qus = "UPDATE student SET password='$pass' WHERE email='$email'";
+                    $quf = "UPDATE faculty SET password='$pass' WHERE email='$email'";
 
                     // Execute the query
-                    $qs = mysqli_query($c, $qus);
-                    $qf = mysqli_query($c, $quf);
+                    $qs = mysqli_query($con, $qus);
+                    $qf = mysqli_query($con, $quf);
 
                     if (!$qs and !$qf) {
                         // Display the error if the query failed
-                        $e = mysqli_error($c);
+                        $e = mysqli_error($con);
                         die("Error: " . $e);
                     } else {
                         // Display success message and redirect
                         echo '<script>alert("Password Change Successful")</script>';
-                        echo '<script>location.replace("auth-signin.php")</script>';
+                        echo '<script>location.replace("Login.php")</script>';
                     }
                 } else {
-                    echo '<script>alert("Something Wrong to verify")</script>';
+                    echo '<script>alert("Something went wrong during verification")</script>';
                 }
                 // Close the database connection
-                mysqli_close($c);
+                mysqli_close($con);
             }
         }
         ?>

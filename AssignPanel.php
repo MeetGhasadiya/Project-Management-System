@@ -1,3 +1,9 @@
+<?php
+include 'connection.php';
+if (!isset($_SESSION['admin'])) {
+    header("Location:Login.php");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -20,7 +26,7 @@
                 margin: 0px;
                 padding: 0px;
             }
-            
+
             body {
                 font-family: Arial, sans-serif;
                 background-color: #f4f4f4;
@@ -32,7 +38,7 @@
                 color: #fff;
                 padding: 15px;
                 display: flex;
-                
+
                 align-items: center;
             }
 
@@ -128,20 +134,15 @@
             button:hover {
                 background-color: #3498db;
             }
-
-            /* Icons */
             i {
                 font-size: 18px;
             }
-
-            /* Responsive Sidebar */
             @media screen and (max-width: 768px) {
                 .sidebar {
                     width: 100%;
                     height: auto;
                     position: relative;
                 }
-
                 .main-content {
                     margin-left: 0;
                 }
@@ -150,7 +151,6 @@
             .addsf{
                 color: #3498DB;
             }
-            /* Profile Dropdown Button */
             .profile-btn {
                 background-color: transparent; /* Remove background */
 
@@ -167,9 +167,6 @@
                 margin-right: 8px;
             }
 
-
-
-            /* Dropdown Menu */
             .dropdown-menu {
                 background-color: #2c3e50;
                 border: none;
@@ -193,23 +190,117 @@
                 border-radius: 5px;
             }
 
-            /* Adjust caret color */
             .caret {
                 border-top: 4px solid white;
                 margin-left: 5px;
             }
 
-            /* Ensure proper alignment on smaller screens */
             @media screen and (max-width: 768px) {
                 .profile-btn {
                     width: 100%;
                     text-align: left;
                 }
             }
+            .section {
+                background-color: #f9f9f9;
+                padding: 20px;
+                margin-bottom: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
 
+            .section h2 {
+                font-size: 24px;
+                color: #2c3e50;
+                margin-bottom: 20px;
+            }
+
+            .section select, .section input[type="text"] {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 20px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            .section select {
+                background-color: #fff;
+                color: #333;
+            }
+
+            .section input[type="submit"] {
+                padding: 10px 20px;
+                background-color: #3498db;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .section input[type="submit"]:hover {
+                background-color: #2980b9;
+            }
+
+            .section p, .section label {
+                font-size: 16px;
+                color: #333;
+            }
         </style>
 
+        <style>
+            /* Styling for the table */
+            .styled-table {
+                width: 100%;
+                border-collapse: collapse;
+                background-color: #fff;
+                margin: 20px auto;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                font-family: Arial, sans-serif;
+            }
 
+            .styled-table thead tr {
+                background-color: #3498db;
+                color: #fff;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            .styled-table th,
+            .styled-table td {
+                padding: 15px;
+                border-bottom: 1px solid #ddd;
+                text-align: center;
+            }
+
+            .styled-table tbody tr:nth-of-type(even) {
+                background-color: #f9f9f9;
+            }
+
+            .styled-table tbody tr:nth-of-type(odd) {
+                background-color: #ffffff;
+            }
+
+            .styled-table tbody tr:hover {
+                background-color: #f1f1f1;
+            }
+
+            .styled-table td {
+                color: #333;
+                font-size: 16px;
+            }
+
+            /* Responsive Table */
+            @media screen and (max-width: 768px) {
+                .styled-table th,
+                .styled-table td {
+                    padding: 10px;
+                    font-size: 14px;
+                }
+            }
+        </style>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     </head>
@@ -222,28 +313,24 @@
         <div class="sidebar">
             <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p>Add Student</p></a>
             <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p>Add Faculty</p></a>
-            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
             <a href="ManageProject.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
-            <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
+            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
             <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p class="addsf">Assign Panel</p></a>
+            <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
             <a href="ManageLogBook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
+            <a href="Announcement.php"><i class="fas fa-bullhorn"></i><p>Announcement</p></a>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
             <div class="navbar">
-                <h1 style="margin:0px;padding: 0px;">Admin Dashboard</h1>
+                <h1 style="margin:0px;padding: 0px;width: 250px;">Panel Allocation</h1>
                 <div style="width: 70%"></div>
                 <div class="nav-links">
                     <div class="dropdown">
-                        <button class="profile-btn" class="dropdown-toggle" type="button" data-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> Profile <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="AdminProfile.php"><i class="fas fa-user"></i> View Profile</a></li>
-                            <li><a href="EditProfile.php"><i class="fas fa-edit"></i> Edit Profile</a></li>
-                            <li><a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                        </ul>
+
+                        <a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+
                     </div>
                 </div>
             </div>
@@ -252,17 +339,107 @@
 
             <div class="section" id="assign-panel">
                 <h2>Assign Panel</h2>
-                <button>Assign Panel Members</button>
+                <form method='POST'>
+                    <?php
+                    $sql = "SELECT fname FROM faculty";
+                    $result = mysqli_query($c, $sql);
+
+                    if (mysqli_num_rows($result) > 0) {
+                        $faculty_names = [];
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $faculty_names[] = $row['fname'];
+                        }
+                        echo "Faculty 1:- ";
+                        echo "<select name='faculty_name1' >";
+                        echo "<option value=''></option>";
+                        foreach ($faculty_names as $name) {
+                            echo "<option value='" . $name . "'>" . $name . "</option>";
+                        }
+                        echo "</select>";
+                        echo "<br><br>";
+                        echo "Faculty 2:- ";
+                        echo "<select name='faculty_name2'>";
+                        echo "<option value=''></option>";
+                        foreach ($faculty_names as $name) {
+                            echo "<option value='" . $name . "'>" . $name . "</option>";
+                        }
+                        echo "</select>";
+                    } else {
+                        echo "No faculty found.";
+                    }
+                    ?>
+                    <br><br>
+                    No of Groups:-
+                    <input type="text" name='groups' required><br><br>
+                    <input type='submit' name='panel' value="AssignPanel">
+                </form>
+            </div>
+            <div class="section">
+                <?php
+                if (isset($_POST['panel'])) {
+                    $f1 = $_POST['faculty_name1'];
+                    $f2 = $_POST['faculty_name2'];
+                    $group = $_POST['groups'];
+                    if ($_POST['faculty_name1'] == $_POST['faculty_name2']) {
+                        echo "<script>alert('Please choose different faculty name..!');</script>";
+                    } else {
+                        $qu = "select *from panelAllocation where Facultyname1 in ('$f1','$f2') or Facultyname1 in ('$f1','$f2')";
+                        $q = mysqli_query($c, $qu);
+
+                        if (mysqli_num_rows($q) > 0) {
+                            echo "<script>alert('Faculty already exists in another panel..!');</script>";
+                        } else {
+
+                            $qui = "insert into panelAllocation(Facultyname1,Facultyname2,No_of_groups) values ('$f1','$f2','$group')";
+                            $qi = mysqli_query($c, $qui);
+
+                            if ($q) {
+//                                echo "<script>alert('Panel Assigned..!');</script>";
+                        echo "<script>window.location.replace('AssignPanel.php');</script>";
+                            }
+                        }
+                    }
+                }
+
+
+// Assuming $c is the connection to the database
+                $query = "SELECT * FROM panelAllocation";  // Query to fetch panel allocations
+                $result = mysqli_query($c, $query);
+
+// Check if any records exist
+                if (mysqli_num_rows($result) > 0) {
+                    // Start the table structure with the 'styled-table' class
+                    echo "<table class='styled-table' align='center'>
+    <thead>
+        <tr class='table-heading-row'>
+            <th>Panel ID</th>
+            <th>Faculty Name 1</th>
+            <th>Faculty Name 2</th>
+            <th>Number of Groups</th>
+        </tr>
+    </thead>
+    <tbody>";
+
+                    // Loop through each row and display the data
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr class='table-data-row'>
+        <td>" . htmlspecialchars($row['panelid']) . "</td>
+        <td>" . htmlspecialchars($row['Facultyname1']) . "</td>
+        <td>" . htmlspecialchars($row['Facultyname2']) . "</td>
+        <td>" . htmlspecialchars($row['No_of_groups']) . "</td>
+      </tr>";
+                    }
+
+                    // Close the table structure
+                    echo "</tbody></table>";
+                } else {
+                    // Display message if no records are found
+                    echo "<p style='text-align:center; font-size: 18px;'>No panel allocation records found.</p>";
+                }
+                ?>
             </div>
 
-
         </div>
-
-        <!-- JavaScript to control which section is visible -->
-        <script>
-
-
-        </script>
 
     </body>
 </html>

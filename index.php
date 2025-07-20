@@ -1,3 +1,9 @@
+<?php
+include 'connection.php';
+if (!isset($_SESSION['admin'])) {
+    header("Location:Login.php");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -205,6 +211,50 @@
                 }
             }
 
+
+            .welcome-message {
+                font-size: 36px;
+                font-weight: bold;
+                text-align: center;
+                padding: 20px;
+                color: black;
+                animation: welcomeAnimation 3s ease-out;
+                margin-top: 50px;
+            }
+
+            /* Keyframe animation for heavy effect */
+            @keyframes welcomeAnimation {
+                0% {
+                    transform: scale(0);
+                    opacity: 0;
+                }
+                50% {
+                    transform: scale(1.2);
+                    opacity: 1;
+                }
+                75% {
+                    transform: scale(1.1);
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            /* Text glow animation */
+            .glow {
+                animation: textGlow 1.5s ease-in-out infinite alternate;
+            }
+
+            @keyframes textGlow {
+                0% {
+                    text-shadow: 0 0 5px #3498db, 0 0 10px #3498db, 0 0 15px #3498db;
+                }
+                100% {
+                    text-shadow: 0 0 20px #3498db, 0 0 30px #3498db, 0 0 40px #3498db;
+                }
+            }
+
         </style>
 
 
@@ -220,12 +270,13 @@
         <div class="sidebar">
             <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p>Add Student</p></a>
             <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p>Add Faculty</p></a>
-            <a href="AssignGrade.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
-            <a href="Announcement.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
-            <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
+            <a href="ManageProject.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
+            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
             <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
-            <a href="ManageLoogbook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
-            
+            <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
+            <a href="ManageLogBook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
+            <a href="Announcement.php"><i class="fas fa-bullhorn"></i><p>Announcement</p></a>
+
 
         </div>
 
@@ -236,19 +287,26 @@
                 <div style="width: 70%"></div>
                 <div class="nav-links">
                     <div class="dropdown">
-                        <button class="profile-btn" class="dropdown-toggle" type="button" data-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> Profile <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="AdminProfile.php"><i class="fas fa-user"></i> View Profile</a></li>
-                            <li><a href="EditProfile.php"><i class="fas fa-edit"></i> Edit Profile</a></li>
-                            <li><a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                        </ul>
+
+                        <a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+
                     </div>
                 </div>
             </div>
+            <div class="section">
+                <div class="welcome-message glow" id="welcomeMessage">
+                    Welcome to the Admin Dashboard!
+                </div>
+            </div>
         </div>
-
+        <script>
+            // JavaScript to trigger animation after page load
+            window.onload = function () {
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                // You can further customize how and when the animation triggers
+                welcomeMessage.style.animationPlayState = 'running';
+            };
+        </script>
 
     </body>
 </html>

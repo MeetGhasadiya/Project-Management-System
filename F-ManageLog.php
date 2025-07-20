@@ -1,6 +1,6 @@
 <?php
 include 'connection.php';
-if(!isset($_SESSION['admin'])){
+if (!isset($_SESSION['faculty'])) {
     header("Location:Login.php");
 }
 ?>
@@ -20,6 +20,11 @@ if(!isset($_SESSION['admin'])){
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
+            }
+
+            .sidebar p{
+                margin: 0px;
+                padding: 0px;
             }
 
             body {
@@ -106,11 +111,6 @@ if(!isset($_SESSION['admin'])){
                 margin-bottom: 20px;
                 border-radius: 5px;
 
-            }
-
-            .sidebar p{
-                margin: 0px;
-                padding: 0px;
             }
 
             .section.active {
@@ -212,54 +212,61 @@ if(!isset($_SESSION['admin'])){
                     text-align: left;
                 }
             }
-            th{
+
+        </style>
+
+        <style>
+            .styled-table {
+                width: 100%;
+                border-collapse: collapse;
+                background-color: #fff;
+                margin: 20px auto;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                font-family: Arial, sans-serif;
+            }
+
+            .styled-table thead tr {
+                background-color: #3498db;
+                color: #fff;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            .styled-table th,
+            .styled-table td {
+                padding: 15px;
+                border-bottom: 1px solid #ddd;
                 text-align: center;
             }
 
-
-            .main-bulk3 {
-                margin: 20px auto;
-                max-width: 90%;
-                background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            .styled-table tbody tr:nth-of-type(even) {
+                background-color: #f9f9f9;
             }
 
-            /* Table Styles */
-            .main-bulk3 table {
-                    width: 100%;
-                border-collapse: collapse;
+            .styled-table tbody tr:nth-of-type(odd) {
+                background-color: #ffffff;
             }
 
-            .main-bulk3 th,
-            .main-bulk3 td {
-                padding: 12px;
-                text-align: left;
-                border-bottom: 1px solid #ddd;
+            .styled-table tbody tr:hover {
+                background-color: #f1f1f1;
             }
 
-            .main-bulk3 th {
-                background-color: #2980b9;
-                color: white;
+            .styled-table td {
+                color: #333;
+                font-size: 16px;
             }
 
-            .main-bulk3 tr:hover {
-                background-color: #f2f2f2;
+            /* Responsive Table */
+            @media screen and (max-width: 768px) {
+                .styled-table th,
+                .styled-table td {
+                    padding: 10px;
+                    font-size: 14px;
+                }
             }
 
-            .main-bulk3 input[type="submit"] {
-                padding: 5px 10px;
-                border: none;
-                border-radius: 5px;
-                background-color: #f39c12;
-                color: white;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-
-            .main-bulk3 input[type="submit"]:hover {
-                background-color: #e67e22; /* Darker shade on hover */
-            }
         </style>
 
 
@@ -273,105 +280,119 @@ if(!isset($_SESSION['admin'])){
 
         <!-- Sidebar -->
         <div class="sidebar">
-            <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p>Add Student</p></a>
-            <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p>Add Faculty</p></a>
-            <a href="ManageProject.php"><i class="fas fa-tasks"></i><p class="addsf">Manage Project</p></a>
-            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
-            <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
-            <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
-            <a href="ManageLogBook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
-            <a href="Announcement.php"><i class="fas fa-bullhorn"></i><p>Announcement</p></a>
+            <a href="F-ViewGroups.php"><i class="fas fa-users"></i><p>View Project Groups</p></a> <!-- Icon for groups -->
+            <a href="F-ManageLog.php"><i class="fas fa-book"></i><p class="addsf">Manage log</p></a> <!-- Icon for managing logs -->
+            <a href="F-ViewSubmission.php"><i class="fas fa-file-alt"></i><p>View Submission</p></a> <!-- Icon for submissions -->
+            <a href="F-AssignEMarks.php"><i class="fas fa-check-circle"></i><p>Assign Evaluation Mark</p></a> <!-- Icon for evaluation/marks -->
+            <a href="F-ViewAnnouncement.php"><i class="fas fa-bullhorn"></i><p>View Announcement</p></a> <!-- Icon for evaluation/marks -->
         </div>
+
 
         <!-- Main Content -->
         <div class="main-content">
             <div class="navbar">
-                <h1 style="margin:0px;padding: 0px;width: 250px;">Manage Project</h1>
+                <h1 style="margin:0px;padding: 0px;width: 200px;">Manage LogBook</h1>
                 <div style="width: 70%"></div>
                 <div class="nav-links">
                     <div class="dropdown">
-                        
-                       <a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                        
+                        <button class="profile-btn" class="dropdown-toggle" type="button" data-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i> Profile <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="F-ProfileEdit.php"><i class="fas fa-edit"></i> Edit Profile</a></li>
+                            <li><a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
+            <div class="section">
+                <table class="styled-table" align="center" border="1" style="width: 100%">
 
-            <?php
-            $qui = "select *from studentgroup";
-            $qi = mysqli_query($c, $qui);
-            $status = "pending";
+                    <thead>
+                        <tr class="table-heading-row">
+                            <th>Log Id</th>
+                            <th>Group Id</th>
+                            <th>Date</th>
+                            <th>Work Completed</th>
+                            <th>Next Task</th>
+                            <th>Status</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $lid = $_SESSION['id'];
 
-            if (isset($_POST['Approve'])) {
-                $id = $_POST['groupid'];
-                $status = 'Approved';
-                $qu = "update studentgroup set Status='$status' where groupid=$id";
-                $q = mysqli_query($c, $qu);
+                        $select = "select fname from faculty where fid='$lid'";
+                        $sdata = mysqli_query($c, $select);
 
-                if ($q) {
-//                    echo "<script>alert('Approved Project...!');</script>";
-                    echo "<script>window.location.replace('ManageProject.php');</script>";
-                }
-            }
-            if (isset($_POST['Reject'])) {
-                $id = $_POST['groupid'];
-                $status = 'Rejected';
-                $qu = "update studentgroup set Status='$status' where groupid=$id";
-                $q = mysqli_query($c, $qu);
+                        $r = mysqli_fetch_assoc($sdata);
+                        $name = $r['fname'];
 
-                if ($q) {
-//                    echo "<script>alert('Rejected Project...!');</script>";
-                    echo "<script>window.location.replace('ManageProject.php');</script>";
-                }
-            }
-            ?>
-            <div class="section" class="bulk">
-                <div class="main-bulk3">
-                    <form method="POST" enctype="multipart/form-data" align="center">
-                        <table>
-                            <tr>
-                                <td align="center" colspan="8">
-                                    <h1>Project list</h1>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Group Id</th>
-                                <th>Enrollment no 1</th>
-                                <th>Enrollment no 2</th>
-                                <th>Enrollment no 3</th>
-                                <th>Enrollment no 4</th>
-                                <th>Project Title</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                            <?php while ($row = mysqli_fetch_assoc($qi)) { ?>
-                                <tr>
+                        $groupid = "select groupid from guideallocation where Guide='$name'";
+                        $id = mysqli_query($c, $groupid);
+                        ?>
+
+                        <?php
+                        while ($r = mysqli_fetch_assoc($id)) {
+                            $gid = $r['groupid'];
+                            $qu = "select *from LogBook where groupid='$gid'";
+                            $q = mysqli_query($c, $qu);
+
+                            while ($row = mysqli_fetch_assoc($q)) {
+                                ?>
+
+                                <tr class="table-data-row">
+                                    <td><?php echo $row['id']; ?></td>
                                     <td><?php echo $row['groupid']; ?></td>
-                                    <td><?php echo $row['enro1']; ?></td>
-                                    <td><?php echo $row['enro2']; ?></td>
-                                    <td><?php echo $row['enro3']; ?></td>
-                                    <td><?php echo $row['enro4']; ?></td>
-                                    <td><?php echo $row['projectTitle']; ?></td>
+                                    <td><?php echo $row['Date']; ?></td>
+                                    <td><?php echo $row['WorkComplated']; ?></td>
+                                    <td><?php echo $row['NextTask']; ?></td>   
                                     <td><?php echo $row['Status']; ?></td>
-                                    <td width="250px">
+                                    <td width="200px">
                                         <form method="POST" style="display:inline-block;">
-                                            <input type="hidden" name="groupid" value="<?php echo $row['groupid']; ?>">
+                                            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                                             <input type="submit" name="Approve" value="Approve" class="btn btn-success" style="width: 86px">
                                         </form>
-                                        <div style="padding: 5px;"></div>
+                                        <div style="padding:5px;"></div>
                                         <form method="POST" style="display:inline-block;">
-                                            <input type="hidden" name="groupid" value="<?php echo $row['groupid']; ?>">
+                                            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                                             <input type="submit" name="Reject" value="Reject" class="btn btn-danger" style="width: 86px">
                                         </form>
                                     </td>
                                 </tr>
-                            <?php } ?>
-                        </table>
-                    </form>
-                </div>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
 
+                <?php
+                if (isset($_POST['Approve'])) {
+                    $id = $_POST['id'];
+                    $status = 'Approved';
+                    $qu = "update LogBook set Status='$status' where id=$id";
+                    $q = mysqli_query($c, $qu);
+
+                    if ($q) {
+//                        echo "<script>alert('Approved...!');</script>";
+                        echo "<script>window.location.replace('F-ManageLog.php');</script>";
+                    }
+                }
+                if (isset($_POST['Reject'])) {
+                    $id = $_POST['id'];
+                    $status = 'Reject';
+                    $qu = "update LogBook set Status='$status' where id=$id";
+                    $q = mysqli_query($c, $qu);
+
+                    if ($q) {
+//                        echo "<script>alert('Reject...!');</script>";
+                        echo "<script>window.location.replace('F-ManageLog.php');</script>";
+                    }
+                }
+                ?>
             </div>
         </div>
-        <?php ?>
     </body>
 </html>

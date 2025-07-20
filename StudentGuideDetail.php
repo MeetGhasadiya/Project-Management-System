@@ -4,6 +4,17 @@ include 'connection.php';
 if (!isset($_SESSION['student'])) {
     header("Location:Login.php");
 }
+
+$lid = $_SESSION['id'];
+
+$select = "select groupid from studentgroup where enro1='$lid' or enro2='$lid' or enro3='$lid' or enro4='$lid'";
+$sdata = mysqli_query($c, $select);
+$data = mysqli_fetch_assoc($sdata);
+$gid = $data['groupid'];
+
+
+$fetch = "select * from guideallocation where groupid='$gid'";
+$guide = mysqli_query($c, $fetch);
 ?>
 <html lang="en">
     <head>
@@ -15,52 +26,60 @@ if (!isset($_SESSION['student'])) {
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <link href="style.css" rel="stylesheet" type="text/css"/>
-        <title>Admin Dashboard</title>
+
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
         <style>
-            .welcome-message {
-                font-size: 36px;
+            /* Styled Table */
+            .styled-table {
+                width: 90%; /* Responsive width */
+                margin: 40px auto; /* Center the table horizontally */
+                border-collapse: collapse; /* Clean table borders */
+                background-color: #fff;
+                border-radius: 10px;
+                overflow: hidden; /* Rounded corners on all sides */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+                font-family: Arial, sans-serif;
+            }
+
+            .styled-table thead tr {
+                background-color: #3498db; /* Header background color */
+                color: #fff; /* Header text color */
+                text-align: left; /* Left-aligned header text */
                 font-weight: bold;
-                text-align: center;
-                padding: 20px;
-                color: black;
-                animation: welcomeAnimation 3s ease-out;
-                margin-top: 50px;
             }
 
-            /* Keyframe animation for heavy effect */
-            @keyframes welcomeAnimation {
-                0% {
-                    transform: scale(0);
-                    opacity: 0;
+            .styled-table th,
+            .styled-table td {
+                padding: 15px; /* Padding for cells */
+                border-bottom: 1px solid #ddd; /* Border for rows */
+            }
+
+            .styled-table tbody tr:hover {
+                background-color: #f2f2f2; /* Highlight row on hover */
+            }
+
+            .styled-table tbody tr:nth-of-type(even) {
+                background-color: #f9f9f9; /* Alternate row colors */
+            }
+
+            .styled-table tbody tr:last-of-type td {
+                border-bottom: none; /* Remove bottom border for the last row */
+            }
+
+            /* Responsive Design */
+            @media screen and (max-width: 768px) {
+                .styled-table {
+                    width: 100%; /* Full width on smaller screens */
                 }
-                50% {
-                    transform: scale(1.2);
-                    opacity: 1;
-                }
-                75% {
-                    transform: scale(1.1);
-                }
-                100% {
-                    transform: scale(1);
-                    opacity: 1;
+
+                .styled-table th,
+                .styled-table td {
+                    font-size: 14px; /* Adjust font size for smaller screens */
                 }
             }
 
-            /* Text glow animation */
-            .glow {
-                animation: textGlow 1.5s ease-in-out infinite alternate;
-            }
-
-            @keyframes textGlow {
-                0% {
-                    text-shadow: 0 0 5px #3498db, 0 0 10px #3498db, 0 0 15px #3498db;
-                }
-                100% {
-                    text-shadow: 0 0 20px #3498db, 0 0 30px #3498db, 0 0 40px #3498db;
-                }
-            }
         </style>
     </head>
     <body>
@@ -76,7 +95,7 @@ if (!isset($_SESSION['student'])) {
             </a>
             <a href="StudentGuideDetail.php">
                 <i class="fa fa-user-tie"></i> <!-- Guide -->
-                <p>Guide Detail</p>
+                <p class="addsf">Guide Detail</p>
             </a>
             <a href="StudentLogBook.php">
                 <i class="fa fa-book-open"></i> <!-- Log Book -->
@@ -104,7 +123,7 @@ if (!isset($_SESSION['student'])) {
         <!-- Main Content -->
         <div class="main-content">
             <div class="navbar">
-                <h1 style="margin:0px;padding: 0px;width: 200px;">Student Dashboard</h1>
+                <h1 style="margin:0px;padding: 0px;width: 200px;">View Your Guide</h1>
                 <div style="width: 70%"></div>
                 <div class="nav-links">
                     <div class="dropdown">
@@ -118,30 +137,44 @@ if (!isset($_SESSION['student'])) {
                     </div>
                 </div>
             </div> 
+
+
             <div class="section">
-                <div class="welcome-message glow" id="welcomeMessage">
-                    Welcome to the Student Dashboard!
-                </div>
+
+                
+
+                <table class="styled-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Id</th>
+                            <th>Group Id</th>
+                            <th>Project Title</th>
+                            <th>Guide Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = mysqli_fetch_assoc($guide)) { ?>
+                            <tr>
+                                <td><?php echo $row['id']; ?></td>
+                                <td><?php echo $row['groupid']; ?></td>
+                                <td><?php echo $row['projectTitle']; ?></td>
+                                <td><?php echo $row['Guide']; ?></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
             </div>
         </div>
 
 
 
+
+
+
     </body>
 </html>
-<!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to edit this template
--->
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title></title>
-    </head>
-    <body>
-        <?php
-        // put your code here
-        ?>
-    </body>
-</html>
+
+

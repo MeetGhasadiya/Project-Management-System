@@ -1,9 +1,8 @@
 <?php
-$host = 'localhost:3308';
-$user = 'root';
-$pass = '';
-$db = 'pms';
-$c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
+include 'connection.php';
+if (!isset($_SESSION['admin'])) {
+    header("Location:Login.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -362,8 +361,102 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                 margin: 0px;
                 padding: 0px;
             }
-        </style>
 
+            /* Main Container */
+            .main-bulk3 {
+                margin: 20px auto;
+                max-width: 90%;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Table Styles */
+            .main-bulk3 table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .main-bulk3 th,
+            .main-bulk3 td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .main-bulk3 th {
+                background-color: #2980b9;
+                color: white;
+            }
+
+            .main-bulk3 tr:hover {
+                background-color: #f2f2f2;
+            }
+
+            .main-bulk3 input[type="submit"] {
+                padding: 5px 10px;
+                border: none;
+                border-radius: 5px;
+                background-color: #f39c12;
+                color: white;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            .main-bulk3 input[type="submit"]:hover {
+                background-color: #e67e22; /* Darker shade on hover */
+            }
+
+            .search-bar {
+                width: 100%;
+                max-width: 600px;
+                padding: 12px 20px;
+                border: 1px solid #dcdcdc;
+                border-radius: 10px;
+                font-size: 16px;
+                color: #333;
+                background-color: #f8f8f8;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                transition: box-shadow 0.3s, border-color 0.3s;
+            }
+
+            .search-bar:focus {
+                border-color: #4285f4;
+                outline: none;
+                box-shadow: 0 2px 10px rgba(66, 133, 244, 0.5);
+            }
+
+            .search-bar::placeholder {
+                color: #a0a0a0;
+                opacity: 5;
+            }
+
+
+        </style>
+        <script>
+            $(document).ready(function () {
+                function loadTableData(query = '') {
+                    $.ajax({
+                        url: "facultysearch.php",
+                        method: "GET",
+                        data: {sid: query},
+                        success: function (data) {
+                            $("#a").html(data);
+                        }
+                    });
+                }
+
+                // Initial load of data
+                loadTableData();
+
+                // Perform search as the user types
+                $("#txtid").on("keyup", function () {
+                    var searchQuery = $(this).val();
+                    loadTableData(searchQuery);
+                });
+            });
+
+        </script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     </head>
@@ -376,28 +469,22 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
         <div class="sidebar">
             <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p>Add Student</p></a>
             <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p class="addsf">Add Faculty</p></a>
-            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
             <a href="ManageProject.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
-            <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
+            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
             <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
+            <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
             <a href="ManageLogBook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
+            <a href="Announcement.php"><i class="fas fa-bullhorn"></i><p>Announcement</p></a>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
             <div class="navbar">
-                <h1 style="margin:0px;padding: 0px;">Admin Dashboard</h1>
+                <h1 style="margin:0px;padding: 0px;width: 250px;">Faculty Registration</h1>
                 <div style="width: 70%"></div>
                 <div class="nav-links">
                     <div class="dropdown">
-                        <button class="profile-btn" class="dropdown-toggle" type="button" data-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> Profile <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="AdminProfile.php"><i class="fas fa-user"></i> View Profile</a></li>
-                            <li><a href="EditProfile.php"><i class="fas fa-edit"></i> Edit Profile</a></li>
-                            <li><a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                        </ul>
+                        <a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </div>
                 </div>
             </div>
@@ -467,7 +554,6 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                 if (isset($_POST['btnbulk'])) {
                     $file = $_FILES['uploade']['tmp_name'];
                     $handle = fopen($file, "r");
-                    echo "<script>alert('fcgbhjmlk,;');</script>";
                     $lines = file($file, FILE_IGNORE_NEW_LINES);
 
                     foreach ($lines as $line) {
@@ -491,7 +577,7 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                             $qu = "insert into faculty values($fid,'$fname',$con,'$deg','$email','$pass')";
                             $q = @mysqli_query($c, $qu);
                             if ($q) {
-                                echo "<script>alert('Record Successfully inserted...!');</script>";
+//                                echo "<script>alert('Record Successfully inserted...!');</script>";
                             } else {
                                 echo "<script>alert('Error while Inserting...!');</script>";
                             }
@@ -517,7 +603,7 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                         $qu = "insert into faculty values($fid,'$fname',$con,'$deg','$email','$pass')";
                         $q = @mysqli_query($c, $qu);
                         if ($q) {
-                            echo "<script>alert('Record Successfully inserted...!');</script>";
+//                            echo "<script>alert('Record Successfully inserted...!');</script>";
                         } else {
                             echo "<script>alert('Error while Inserting...!');</script>";
                         }
@@ -527,67 +613,77 @@ $c = mysqli_connect($host, $user, $pass, $db) or die("Error while connecting");
                 $qui = "select *from faculty";
                 $qi = mysqli_query($c, $qui);
 
-                if(isset($_POST['delete'])) {
-                    $id = $_POST['fid'];
-                    $delete = "DELETE FROM faculty WHERE fid=$id";
-                    $query = @mysqli_query($c, $delete);
+                if (isset($_POST['delete'])) {
+                    $fid = $_POST['fid'];
 
-                    if ($query) {
+                    // Start transaction
+                    mysqli_begin_transaction($c);
+
+                    try {
+                        // Fetch the faculty data to archive
+                        $select = "SELECT * FROM faculty WHERE fid = $fid";
+                        $result = mysqli_query($c, $select);
+
+                        if (mysqli_num_rows($result) == 0) {
+                            throw new Exception("No record found with the given ID.");
+                        }
+
+                        $faculty = mysqli_fetch_assoc($result);
+
+                        // Insert the faculty data into the archived_faculty table
+                        $archive = "INSERT INTO archived_faculty (fid, fname, contactnumber, designation, email)
+                    VALUES ('" . $faculty['fid'] . "', 
+                            '" . mysqli_real_escape_string($c, $faculty['fname']) . "', 
+                            '" . mysqli_real_escape_string($c, $faculty['contactnumber']) . "', 
+                            '" . mysqli_real_escape_string($c, $faculty['designation']) . "', 
+                            '" . mysqli_real_escape_string($c, $faculty['email']) . "')";
+
+                        if (!mysqli_query($c, $archive)) {
+                            throw new Exception("Error archiving faculty: " . mysqli_error($c));
+                        }
+
+                        // Delete the faculty data from the faculty table
+                        $delete = "DELETE FROM faculty WHERE fid = $fid";
+                        if (!mysqli_query($c, $delete)) {
+                            throw new Exception("Error deleting faculty: " . mysqli_error($c));
+                        }
+
+                        // Commit the transaction
+                        mysqli_commit($c);
+
+                        // Success message
+//                        echo "<script>alert('Faculty deleted successfully');</script>";
                         echo "<script>window.location.replace('AddFaculty.php');</script>";
-                        echo "<script>alert('Deleted succesfully');</script>";
-                        exit();
-                    } else {
-                        echo "<script>alert('Error: " . $sql . "<br>" . $conn->error . "');</script>";
+                    } catch (Exception $e) {
+                        // Rollback the transaction in case of error
+                        mysqli_rollback($c);
+                        echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
                     }
                 }
+
+
+// Close the database connection
                 ?>
             </div>
 
             <div class="section" class="bulk">
-
                 <div class="main-bulk3">
                     <form method="POST" enctype="multipart/form-data" align="center">
-                        <table align="center" border="all" width="90%" align="center">
+                        <table>
                             <tr>
-                                <td align="center" colspan="6">
-                                    <h1>Student Records</h1>
+                                <td align="center" colspan="4">
+                                    <h1>Faculty Records</h1>
+                                </td>
+                                <td colspan="2" style="text-align:right;">
+                                    <input type='text' name='search' id='txtid' placeholder="Search..." class="search-bar">
                                 </td>
                             </tr>
-
-                            <tr>
-                                <th>Faculty Id</th>
-                                <th>Faculty Name</th>
-                                <th>Contact Number</th>
-                                <th>Designation</th>
-                                <th>Email</th>
-                                <th>Action</th>
-                            </tr>
-                            <?php while ($r = mysqli_fetch_assoc($qi)) { ?>
-                                <tr>
-                                    <td><?php echo $r['fid']; ?></td>
-                                    <td><?php echo $r['fname']; ?></td>
-                                    <td><?php echo $r['contactnumber']; ?></td>
-                                    <td><?php echo $r['designation']; ?></td>
-                                    <td><?php echo $r['email']; ?></td>
-                                    <td>
-                                        <form method="POST" action="AddFaculty.php" style="display:inline-block;">
-                                            <input type="hidden" name="fid" value="<?php echo $r['fid']; ?>">
-                                            <input type="submit" name="delete" value="Delete">
-                                        </form>
-                                        <form method="GET" action="update.php" style="display:inline-block;">
-                                            <input type="hidden" name="fid" value="<?php echo $r['fid']; ?>">
-                                            <input type="submit" value="Edit" style="width: 86px">
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php } ?>
+                        </table>
+                        <table border="1" align="center" id="a">
                         </table>
                     </form>
                 </div>
             </div>
-
         </div>
-
-
     </body>
 </html>

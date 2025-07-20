@@ -1,9 +1,21 @@
 <?php
 include 'connection.php';
-if(!isset($_SESSION['admin'])){
+if (!isset($_SESSION['faculty'])) {
     header("Location:Login.php");
 }
+
+$lid = $_SESSION['id'];
+
+$select = "select fname from faculty where fid='$lid'";
+$sdata = mysqli_query($c, $select);
+
+$r = mysqli_fetch_assoc($sdata);
+$name = $r['fname'];
+
+$guide = "select * from guideallocation where Guide='$name'";
+$guidedata = mysqli_query($c, $guide);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -20,6 +32,11 @@ if(!isset($_SESSION['admin'])){
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
+            }
+
+            .sidebar p{
+                margin: 0px;
+                padding: 0px;
             }
 
             body {
@@ -106,11 +123,6 @@ if(!isset($_SESSION['admin'])){
                 margin-bottom: 20px;
                 border-radius: 5px;
 
-            }
-
-            .sidebar p{
-                margin: 0px;
-                padding: 0px;
             }
 
             .section.active {
@@ -212,54 +224,89 @@ if(!isset($_SESSION['admin'])){
                     text-align: left;
                 }
             }
-            th{
-                text-align: center;
-            }
 
 
-            .main-bulk3 {
+            .group-detail-table {
                 margin: 20px auto;
-                max-width: 90%;
+                width: 95%; /* Increased width */
                 background-color: #fff;
                 border-radius: 8px;
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
             }
 
-            /* Table Styles */
-            .main-bulk3 table {
-                    width: 100%;
-                border-collapse: collapse;
+            .group-detail-table .table-header {
+                background-color: #2980b9;
+                color: white;
+                padding: 15px;
+                text-align: center;
             }
 
-            .main-bulk3 th,
-            .main-bulk3 td {
+            .group-detail-table .table-title {
+                font-size: 24px;
+                font-weight: bold;
+                margin: 0;
+            }
+
+            .group-detail-table .table-heading-row {
+                background-color: #2980b9;
+                font-weight: bold;
+                color: white;
+            }
+
+            .group-detail-table th,
+            .group-detail-table td {
                 padding: 12px;
                 text-align: left;
                 border-bottom: 1px solid #ddd;
             }
 
-            .main-bulk3 th {
-                background-color: #2980b9;
-                color: white;
+            .group-detail-table .table-data-row:hover {
+                background-color: #f2f2f2; /* Row highlight on hover */
             }
 
-            .main-bulk3 tr:hover {
-                background-color: #f2f2f2;
-            }
-
-            .main-bulk3 input[type="submit"] {
+            .group-detail-table .action-btn {
                 padding: 5px 10px;
-                border: none;
-                border-radius: 5px;
                 background-color: #f39c12;
                 color: white;
+                border: none;
+                border-radius: 5px;
                 cursor: pointer;
                 transition: background-color 0.3s ease;
             }
 
-            .main-bulk3 input[type="submit"]:hover {
+            .group-detail-table .action-btn:hover {
                 background-color: #e67e22; /* Darker shade on hover */
             }
+
+            .group-detail-table .action-btn:active {
+                background-color: #d35400; /* Even darker shade when clicked */
+            }
+
+            .search-bar {
+                width: 100%;
+                max-width: 600px;
+                padding: 12px 20px;
+                border: 1px solid #dcdcdc;
+                border-radius: 10px;
+                font-size: 16px;
+                color: #333;
+                background-color: #f8f8f8;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                transition: box-shadow 0.3s, border-color 0.3s;
+            }
+
+            .search-bar:focus {
+                border-color: #4285f4;
+                outline: none;
+                box-shadow: 0 2px 10px rgba(66, 133, 244, 0.5);
+            }
+
+            .search-bar::placeholder {
+                color: #a0a0a0;
+                opacity: 5;
+            }
+
         </style>
 
 
@@ -268,110 +315,65 @@ if(!isset($_SESSION['admin'])){
     </head>
     <body>
 
-        <!-- Horizontal Navbar -->
-
-
-        <!-- Sidebar -->
         <div class="sidebar">
-            <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p>Add Student</p></a>
-            <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p>Add Faculty</p></a>
-            <a href="ManageProject.php"><i class="fas fa-tasks"></i><p class="addsf">Manage Project</p></a>
-            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
-            <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
-            <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
-            <a href="ManageLogBook.php"><i class="fas fa-book"></i><p>Manage Logbook</p></a>
-            <a href="Announcement.php"><i class="fas fa-bullhorn"></i><p>Announcement</p></a>
+            <a href="F-ViewGroups.php"><i class="fas fa-users"></i><p class="addsf">View Project Groups</p></a> <!-- Icon for groups -->
+            <a href="F-ManageLog.php"><i class="fas fa-book"></i><p>Manage log</p></a> <!-- Icon for managing logs -->
+            <a href="F-ViewSubmission.php"><i class="fas fa-file-alt"></i><p>View Submission</p></a> <!-- Icon for submissions -->
+            <a href="F-AssignEMarks.php"><i class="fas fa-check-circle"></i><p>Assign Evaluation Mark</p></a> <!-- Icon for evaluation/marks -->
+            <a href="F-ViewAnnouncement.php"><i class="fas fa-bullhorn"></i><p>View Announcement</p></a> <!-- Icon for evaluation/marks -->
+
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
             <div class="navbar">
-                <h1 style="margin:0px;padding: 0px;width: 250px;">Manage Project</h1>
+                <h1 style="margin:0px;padding: 0px;width: 200px;">Groups Details</h1>
                 <div style="width: 70%"></div>
                 <div class="nav-links">
                     <div class="dropdown">
-                        
-                       <a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                        
+                        <button class="profile-btn" class="dropdown-toggle" type="button" data-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i> Profile <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="F-ProfileEdit.php"><i class="fas fa-edit"></i> Edit Profile</a></li>
+                            <li><a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
                     </div>
                 </div>
+
+            </div> 
+
+            <div class="section">
+                <table class="group-detail-table" align="center">
+
+                    <tr class="table-data-row">
+                        <td align="center" colspan="2">
+                            <h1>Student Records</h1>
+
+                        </td>
+                        
+
+                    </tr>
+                    <tr class="table-heading-row">
+                        <th>Group Id</th>
+                        <th>Project Title</th>
+                        <th>Guide</th>
+                        <th>Actions</th>
+                    </tr>
+
+                    <?php while ($row = mysqli_fetch_assoc($guidedata)) { ?>
+                        <tr class="table-data-row">
+                            <td><?php echo $row['groupid']; ?></td>
+                            <td><?php echo $row['projectTitle']; ?></td>
+                            <td><?php echo $row['Guide']; ?></td>
+                            <td>
+                                <form method="POST" action="V-StudentDetail.php" class="group-action-form" style="display:inline-block;">
+                                    <input type="hidden" name="id" value="<?php echo $row['groupid']; ?>">
+                                    <input type="submit" name="delete" value="Group Detail" class="action-btn">
+                                </form>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </table>
             </div>
-
-            <?php
-            $qui = "select *from studentgroup";
-            $qi = mysqli_query($c, $qui);
-            $status = "pending";
-
-            if (isset($_POST['Approve'])) {
-                $id = $_POST['groupid'];
-                $status = 'Approved';
-                $qu = "update studentgroup set Status='$status' where groupid=$id";
-                $q = mysqli_query($c, $qu);
-
-                if ($q) {
-//                    echo "<script>alert('Approved Project...!');</script>";
-                    echo "<script>window.location.replace('ManageProject.php');</script>";
-                }
-            }
-            if (isset($_POST['Reject'])) {
-                $id = $_POST['groupid'];
-                $status = 'Rejected';
-                $qu = "update studentgroup set Status='$status' where groupid=$id";
-                $q = mysqli_query($c, $qu);
-
-                if ($q) {
-//                    echo "<script>alert('Rejected Project...!');</script>";
-                    echo "<script>window.location.replace('ManageProject.php');</script>";
-                }
-            }
-            ?>
-            <div class="section" class="bulk">
-                <div class="main-bulk3">
-                    <form method="POST" enctype="multipart/form-data" align="center">
-                        <table>
-                            <tr>
-                                <td align="center" colspan="8">
-                                    <h1>Project list</h1>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Group Id</th>
-                                <th>Enrollment no 1</th>
-                                <th>Enrollment no 2</th>
-                                <th>Enrollment no 3</th>
-                                <th>Enrollment no 4</th>
-                                <th>Project Title</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                            <?php while ($row = mysqli_fetch_assoc($qi)) { ?>
-                                <tr>
-                                    <td><?php echo $row['groupid']; ?></td>
-                                    <td><?php echo $row['enro1']; ?></td>
-                                    <td><?php echo $row['enro2']; ?></td>
-                                    <td><?php echo $row['enro3']; ?></td>
-                                    <td><?php echo $row['enro4']; ?></td>
-                                    <td><?php echo $row['projectTitle']; ?></td>
-                                    <td><?php echo $row['Status']; ?></td>
-                                    <td width="250px">
-                                        <form method="POST" style="display:inline-block;">
-                                            <input type="hidden" name="groupid" value="<?php echo $row['groupid']; ?>">
-                                            <input type="submit" name="Approve" value="Approve" class="btn btn-success" style="width: 86px">
-                                        </form>
-                                        <div style="padding: 5px;"></div>
-                                        <form method="POST" style="display:inline-block;">
-                                            <input type="hidden" name="groupid" value="<?php echo $row['groupid']; ?>">
-                                            <input type="submit" name="Reject" value="Reject" class="btn btn-danger" style="width: 86px">
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                        </table>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-        <?php ?>
     </body>
 </html>

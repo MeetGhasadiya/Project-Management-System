@@ -1,6 +1,6 @@
 <?php
 include 'connection.php';
-if (!isset($_SESSION['admin'])) {
+if (!isset($_SESSION['faculty'])) {
     header("Location:Login.php");
 }
 ?>
@@ -214,138 +214,80 @@ if (!isset($_SESSION['admin'])) {
             }
 
         </style>
-        <style>
-            .styled-table {
-                width: 100%;
-                border-collapse: collapse;
-                background-color: #fff;
-                margin: 20px auto;
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                font-family: Arial, sans-serif;
-            }
 
-            .styled-table thead tr {
-                background-color: #3498db;
-                color: #fff;
-                text-align: left;
-                font-weight: bold;
-            }
-
-            .styled-table th,
-            .styled-table td {
-                padding: 15px;
-                border-bottom: 1px solid #ddd;
-                text-align: center;
-            }
-
-            .styled-table tbody tr:nth-of-type(even) {
-                background-color: #f9f9f9;
-            }
-
-            .styled-table tbody tr:nth-of-type(odd) {
-                background-color: #ffffff;
-            }
-
-            .styled-table tbody tr:hover {
-                background-color: #f1f1f1;
-            }
-
-            .styled-table td {
-                color: #333;
-                font-size: 16px;
-            }
-
-            /* Responsive Table */
-            @media screen and (max-width: 768px) {
-                .styled-table th,
-                .styled-table td {
-                    padding: 10px;
-                    font-size: 14px;
-                }
-            }
-
-        </style>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     </head>
     <body>
 
-        <!-- Horizontal Navbar -->
-
-
-        <!-- Sidebar -->
         <div class="sidebar">
-            <a href="AddStudent.php"><i class="fas fa-user-plus"></i><p>Add Student</p></a>
-            <a href="AddFaculty.php"><i class="fas fa-user-plus"></i><p>Add Faculty</p></a>
-            <a href="ManageProject.php"><i class="fas fa-tasks"></i><p>Manage Project</p></a>
-            <a href="AssignGuide.php"><i class="fas fa-shield-alt"></i><p>Assign Guide</p></a>
-            <a href="AssignPanel.php"><i class="fas fa-chalkboard-teacher"></i><p>Assign Panel</p></a>
-            <a href="MakeEvaluationSheet.php"><i class="fas fa-clipboard"></i><p>Make Evaluation Sheet</p></a>
-            <a href="ManageLogBook.php"><i class="fas fa-book"></i><p class="addsf">Manage Logbook</p></a>
-            <a href="Announcement.php"><i class="fas fa-bullhorn"></i><p>Announcement</p></a>
+            <a href="F-ViewGroups.php"><i class="fas fa-users"></i><p>View Project Groups</p></a> <!-- Icon for groups -->
+            <a href="F-ManageLog.php"><i class="fas fa-book"></i><p>Manage log</p></a> <!-- Icon for managing logs -->
+            <a href="F-ViewSubmission.php"><i class="fas fa-file-alt"></i><p class="addsf">View Submission</p></a> <!-- Icon for submissions -->
+            <a href="F-AssignEMarks.php"><i class="fas fa-check-circle"></i><p>Assign Evaluation Mark</p></a> <!-- Icon for evaluation/marks -->
+            <a href="F-ViewAnnouncement.php"><i class="fas fa-bullhorn"></i><p>View Announcement</p></a> <!-- Icon for evaluation/marks -->
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
             <div class="navbar">
-                <h1 style="margin:0px;padding: 0px;width: 250px;">Manage LogBook</h1>
+                <h1 style="margin:0px;padding: 0px;width: 200px;">View Submission</h1>
                 <div style="width: 70%"></div>
                 <div class="nav-links">
                     <div class="dropdown">
-
-                        <a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-
+                        <button class="profile-btn" class="dropdown-toggle" type="button" data-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i> Profile <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="F-ProfileEdit.php"><i class="fas fa-edit"></i> Edit Profile</a></li>
+                            <li><a href="Logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <!-- Sections for different sidebar links -->
+            <?php
+            $lid = $_SESSION['id'];
 
+            $select = "select fname from faculty where fid='$lid'";
+            $sdata = mysqli_query($c, $select);
 
-            <div class="section" id="logbook">
-                
-                <table class="styled-table" align="center">
+            $r = mysqli_fetch_assoc($sdata);
+            $name = $r['fname'];
+
+            $guide = "select * from guideallocation where Guide='$name'";
+            $guidedata = mysqli_query($c, $guide);
+            ?>
+            <div class="section">
+                <h3>Submissions</h3>
+                <table class="table table-bordered table-hover">
                     <thead>
-                        <tr class="table-heading-row">
-                            <th>Group Id</th>
-                            <th>Date</th>
-                            <th>Work Completed</th>
-                            <th>Next Task</th>
-                            <th>Status</th>
+                        <tr>
+                            <th>Group ID</th>
+                            <th>File Name</th>
+                            <th>Document</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $qu = "SELECT * FROM LogBook";
-                        $q = mysqli_query($c, $qu);
+                        while ($r = mysqli_fetch_assoc($guidedata)) {
+                            $gid = $r['groupid'];
+                            $qu = "select groupid, filename, filepath FROM submission where groupid='$gid'";
+                            $result = mysqli_query($c, $qu);
 
-                        while ($row = mysqli_fetch_assoc($q)) {
-                            ?>
-                            <tr class="table-data-row">
-                                <td><?php echo htmlspecialchars($row['groupid']); ?></td>
-                                <td><?php echo htmlspecialchars($row['Date']); ?></td>
-                                <td><?php echo htmlspecialchars($row['WorkComplated']); ?></td>
-                                <td><?php echo htmlspecialchars($row['NextTask']); ?></td>   
-                                <td><?php echo htmlspecialchars($row['Status']); ?></td>
-                            </tr>
-                        <?php } ?>
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo "<tr>
+                                    <td>" . ($row['groupid']) . "</td>
+                                    <td>" . ($row['filename']) . "</td>
+                                    <td><a href='" . ($row['filepath']) . "' target='_blank'>View Document</a></td>
+                                </tr>";
+                                }
+                            } 
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>
-
         </div>
-    </div>
-
-
-</div>
-
-<!-- JavaScript to control which section is visible -->
-<script>
-
-
-</script>
-
-</body>
+    </body>
 </html>

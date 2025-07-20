@@ -1,8 +1,16 @@
 <?php
 include 'connection.php';
-if (!isset($_SESSION['student'])) {
+if(!isset($_SESSION['student'])){
     header("Location:Login.php");
 }
+$lid = $_SESSION['id'];
+
+$select = "select * from student where sid='$lid'";
+$sdata = mysqli_query($c, $select);
+
+$r = mysqli_fetch_assoc($sdata);
+
+$hash = $r['password'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,21 +20,11 @@ if (!isset($_SESSION['student'])) {
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-        <script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
-        <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.dataTables.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-        <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.html5.min.js"></script>
-        <script src=https://cdn.datatables.net/buttons/3.2.0/js/buttons.print.min.js""></script>
 
         <link href="style.css" rel="stylesheet" type="text/css"/>
-        <title>Admin Dashboard</title>
+        <title>Student Dashboard</title>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -232,74 +230,78 @@ if (!isset($_SESSION['student'])) {
             text-align: center;
         }
 
-
-
-        /* Project Status Table */
-        .project-status-form {
-            margin-top: 20px;
-        }
-
-        .project-status-table {
+        form {
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 600px;
             width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            margin-top: 20px;
+
+            margin: auto; /* Center the form */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
+            animation: fadeIn 1s ease-in-out;
+            background-color: #fff; /* Ensure background is white */
         }
 
-        .project-status-table th, .project-status-table td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        .table-header {
-            background-color: #2980b9;
-            color: #fff;
+        .h1 {
             text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
         }
 
-        .table-title {
-            font-size: 24px;
-            font-weight: bold;
+        table {
+            width: 100%;
+            border-spacing: 10px;
+            margin: auto; /* Center the table */
         }
 
-        .table-heading-row {
-            background-color: #2980B9;
-            color: #fff;
+        td {
+            padding: 10px;
+            vertical-align: middle;
         }
 
-        .table-heading-row th {
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+            transition: all 0.3s ease;
         }
 
-        .table-data-row {
-            background-color: #ecf0f1;
+        input[type="number"]:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            border-color: #5c67f2;
+            box-shadow: 0 0 8px rgba(92, 103, 242, 0.2);
         }
 
-        .table-data-row:hover {
-            background-color: #dfe6e9;
-        }
-
-        .project-status-table td {
-            color: #2c3e50;
-        }
-
-        /* Button styling (if needed for additional features) */
         button {
-            padding: 10px 15px;
-            background-color: #2980b9;
+            width: 20%;
+            padding: 12px;
+            background-color: #3498DB;
             color: #fff;
             border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        button:hover {
-            background-color: #3498db;
+    
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-
-
+        
+        
     </style>
     <body>
 
@@ -308,45 +310,35 @@ if (!isset($_SESSION['student'])) {
 
         <!-- Sidebar -->
         <div class="sidebar">
-
+           
             <a href="StudentMakeGroup.php">
                 <i class="fa fa-users"></i>
                 <p>Making Group</p>
             </a>
-            <a href="StudentProPermission.php">
-                <i class="fa fa-check-circle"></i> <!-- Permission -->
-                <p class="addsf">Project Permission</p>
-            </a>
-            <a href="StudentGuideDetail.php">
-                <i class="fa fa-user-tie"></i> <!-- Guide -->
-                <p>Guide Detail</p>
-            </a>
-            <a href="StudentLogBook.php">
-                <i class="fa fa-book-open"></i> <!-- Log Book -->
-                <p>View Log Book</p>
-            </a>
             <a href="SudentTask.php">
-                <i class="fa fa-tasks"></i> <!-- Task Submission -->
-                <p>Submission</p>
+                <i class="fa fa-tasks"></i>
+                <p>Update the Task</p>
             </a>
-            <a href="SudentPanelDetail.php">
-                <i class="fa fa-users-cog"></i> <!-- Panel Details -->
-                <p>Panel Detail</p>
+            <a href="StudentProPermission.php">
+                <i class="fa fa-users-cog"></i>
+                <p>Project Permission</p>
             </a>
             <a href="StudentEvaluationMark.php">
-                <i class="fa fa-star"></i> <!-- Evaluation Marks -->
+                <i class="fa fa-file-alt"></i>
                 <p>Evaluation Marks</p>
             </a>
-            <a href="StudentViewAnnouncement.php">
-                <i class="fas fa-bullhorn"></i>
-                <p>View Announcement</p>
+            <a href="StudentLogBook.php">
+                <i class="fa fa-book"></i>
+                <p>View Log Book</p>
             </a>
+
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
+            
             <div class="navbar">
-                <h1 style="margin:0px;padding: 0px;width: 200px;">Project Status</h1>
+                <h1 style="margin:0px;padding: 0px;width: 150px;">Student Profile</h1>
                 <div style="width: 70%"></div>
                 <div class="nav-links">
                     <div class="dropdown">
@@ -360,53 +352,77 @@ if (!isset($_SESSION['student'])) {
                     </div>
                 </div>
             </div> 
-            <?php
-            $qui = "select *from studentgroup";
-            $qi = mysqli_query($c, $qui);
-            ?>
-            <div class="section" class="bulk">
-                <div class="main-bulk3">
-                    <form method="POST" enctype="multipart/form-data" class="project-status-form">
-                        <table class="project-status-table" id="example">
-                            <thead>                               
-                                <tr class="table-heading-row">
-                                    <th>Group Id</th>
-                                    <th>Enrollment No 1</th>
-                                    <th>Enrollment No 2</th>
-                                    <th>Enrollment No 3</th>
-                                    <th>Enrollment No 4</th>
-                                    <th>Project Title</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while ($row = mysqli_fetch_assoc($qi)) { ?>
-                                    <tr class="table-data-row">
-                                        <td><?php echo $row['groupid']; ?></td>
-                                        <td><?php echo $row['enro1']; ?></td>
-                                        <td><?php echo $row['enro2']; ?></td>
-                                        <td><?php echo $row['enro3']; ?></td>
-                                        <td><?php echo $row['enro4']; ?></td>
-                                        <td><?php echo $row['projectTitle']; ?></td>
-                                        <td><?php echo $row['Status']; ?></td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </form>
-                </div>  
+            <div class="section">
+                <form method="POST" id="frmsubmit">
+                    <table>
+                        <tr>
+                            <td colspan="4"><h1 class="h1">Edit Student Profile</h1></td>
+                        </tr>
+                        <tr>
+                            <td><p>ID:</p></td>
+                            <td colspan="3"><?php echo $r['sid'] ?></td>
+                        </tr>
+                        <tr>
+                            <td><p>Name:</p></td>
+                            <td colspan="3"><input type="text" id="name" name="name" value="<?php echo $r['fullName'] ?>" required></td>
+                        </tr>
+                        <tr>
+                            <td><p>Semester:</p></td>
+                            <td colspan="3"><?php echo $r['sem'] ?></td>
+                        </tr>
+                        <tr>
+                            <td><p>Email:</p></td>
+                            <td colspan="3"><input type="email" id="email" name="email" value="<?php echo $r['email'] ?>" required></td>
+                        </tr>
+                        <tr>
+                            <td><p>Contact No:</p></td>
+                            <td colspan="3"><input type="number" id="contact" name="contact" value="<?php echo $r['contactno'] ?>" required></td>
+                        </tr>
+                        <tr>
+                            <td><p>Old Password:</p></td>
+                            <td colspan="3"><input type="password" id="old_password" name="old_password" required></td>
+                        </tr>
+                        <tr>
+                            <td><p>New Password:</p></td>
+                            <td colspan="3"><input type="password" id="new_password" name="new_password" required></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" align="right">
+                                <button type="submit" name="submit" value="submit" id="btnSubmit">Submit</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
             </div>
-            <script>
-                new DataTable('#example', {
-                    layout: {
-                        topStart: {
-                            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-                        }
-                    }
-                });
-            </script>
         </div>
-    </div>
+   
 
 </body>
 </html>
+
+
+
+
+
+
+<?php
+if (isset($_POST['submit'])) {
+    $name = $_POST['name'];
+
+    $email = $_POST['email'];
+    $contact = $_POST['contact'];
+    $old_password = $_POST['old_password'];
+    $new_password = $_POST['new_password'];
+
+    $hash_password = password_hash($new_password, PASSWORD_DEFAULT);
+
+    if (password_verify($old_password, $hash)) {
+        $qu = "UPDATE student SET fullName='$name', email='$email', contactno='$contact', password='$hash_password' where sid=$lid";
+        $q = mysqli_query($c, $qu);
+        echo "<script>alert('Profile changed');</script>";
+        echo '<script>window.location.replace("http://localhost/pms2/StudentDashboard.php");</script>';
+    } else {
+        echo "<script>alert('Password is Wrong');</script>";
+    }
+}
+?>

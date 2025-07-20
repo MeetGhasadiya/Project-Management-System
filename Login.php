@@ -1,4 +1,22 @@
-<!DOCTYPE html>
+
+
+
+
+
+
+<?php
+include 'connection.php';
+if(isset($_SESSION['student'])){
+    echo '<script>window.location.replace("http://localhost/pms2/StudentDashboard.php");</script>';
+}
+if(isset($_SESSION['faculty'])){
+    echo '<script>window.location.replace("http://localhost/pms2/F-FacultyDashboard.php");</script>';
+}
+if(isset($_SESSION['admin'])){
+    echo '<script>window.location.replace("http://localhost/pms2/index.php");</script>';
+}
+
+?>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -145,51 +163,49 @@
 
         <?php
         if (isset($_POST['btnlogin'])) {
-            $hostname = "localhost:3308";
-            $username = "root";
-            $password = "";
-            $database = "pms";
-
-            // Establish database connection
-            $c = mysqli_connect($hostname, $username, $password, $database);
             if (!$c) {
-//                echo '<script>alert("Connection Error: ' . mysqli_connect_error() . '");</script>';
                 echo '<script>alert("Some Went Wrong While Connecting server.");</script>';
             } else {
-
                 $id = $_POST['txtid'];
                 $pass = $_POST['txtpass'];
+
+                // Queries for student, faculty, and admin
                 $qus = "SELECT password FROM student WHERE sid='$id'";
                 $quf = "SELECT password FROM faculty WHERE fid='$id'";
+                $qua = "SELECT * FROM tbladmin WHERE id='$id'";
 
-                echo "<script>alert('$id')</script>";
-
-                $qs = mysqli_query($c, $qus);
-                $qf = mysqli_query($c, $quf);
-
-                $s = mysqli_num_rows($qs);
-                $f = mysqli_num_rows($qf);
-
-                if (!$qs and !$qf) {
-
-                    echo '<script>alert("Query Error: ' . mysqli_error($c) . '");</script>';
-                } else {
+                $qs = mysqli_query($c, $qus); // Student query result
+                $qf = mysqli_query($c, $quf); // Faculty query result
+                // Check if either query has results
+                if (mysqli_num_rows($qs) > 0 || mysqli_num_rows($qf) > 0) {
+                    // Fetch results
                     $rs = mysqli_fetch_row($qs);
                     $rf = mysqli_fetch_row($qf);
-                    $stupass = $rs[0];
-                    $facpass = $rf[0];
 
-                    if (password_verify($pass, $stupass)) {
-                        $_SESSION['txtemail'] = $id;
-                        echo '<script>alert("Login Successfully student");</script>';
+                    $stupass = $rs[0] ?? null;
+                    $facpass = $rf[0] ?? null;
+
+                    // Validate password for student or faculty
+                    if ($stupass && password_verify($pass, $stupass)) {
+                        $_SESSION['id'] = $id;
+                        $_SESSION['student'] = $id;
+                        
                         echo '<script>window.location.replace("http://localhost/pms2/StudentDashboard.php");</script>';
-                    } else if (password_verify($pass, $facpass)) {
-                        $_SESSION['txtemail'] = $id;
-                        echo '<script>alert("Login Successfully faculty");</script>';
-                        echo '<script>window.location.replace("http://localhost/pms2/index.php");</script>';
+                    } else if ($facpass && password_verify($pass, $facpass)) {
+                        $_SESSION['id'] = $id;
+                         $_SESSION['faculty'] = $id;
+                        
+                        echo '<script>window.location.replace("http://localhost/pms2/F-FacultyDashboard.php");</script>';
                     } else {
                         echo '<script>alert("Wrong Password");</script>';
                     }
+                } else if ($id === '0' && $pass === 'admin1234') {
+                    $_SESSION['id'] = $id;
+                     $_SESSION['admin'] = $id;
+                    
+                    echo '<script>window.location.replace("http://localhost/pms2/index.php");</script>';
+                } else {
+                    echo '<script>alert("User Not Found");</script>';
                 }
 
                 // Close the database connection
@@ -197,5 +213,7 @@
             }
         }
         ?>
+
+
     </body>
 </html>
